@@ -196,8 +196,8 @@ export async function hydraDxToParachain(amount: number, assetId: number, destAc
 /// tested on assethub > hydradx
 /// assethub > parachain, send an asset on assethub to receiving parachain
 export async function assethub_to_parachain(assetid: string, amount: number, accountid: string, paraid: number) {
-	//console.log(`[assethub_to_hydra]`);
-	const api = await connectToWsEndpoint(endpoints.polkadot.assetHub);
+	//console.log(`[assethub_to_parachain]`);
+	const api = await connectToWsEndpoint('assetHub');
 	//const paraid = 2034;//hydradx
 	//const accountid = "0xca477d2ed3c433806a8ce7969c5a1890187d765ab8080d3793b49b42aa9e805f";
 	const destination = {
