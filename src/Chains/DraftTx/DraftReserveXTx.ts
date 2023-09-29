@@ -105,8 +105,8 @@ export async function dotToHydraDx(amount: number, targetAddress: string){
     );
     console.log(`[dotTohydraDx] tx created!`);
     console.log("[dotTohydraDx] tx to hex", tx.toHex());
-    console.log("[dotTohydraDx] tx to human", tx.toHuman());
-    console.log("[dotTohydraDx] tx", tx);
+    //console.log("[dotTohydraDx] tx to human", tx.toHuman());
+    //console.log("[dotTohydraDx] tx", tx);
 
     return tx;
 }
