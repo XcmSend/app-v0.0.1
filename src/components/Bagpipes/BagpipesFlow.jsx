@@ -10,7 +10,6 @@ import ReactFlow, { Panel, MiniMap, Controls, Background, BackgroundVariant, app
 import { useExecuteChainScenario, useCopyPaste, useUndoRedo, useSaveDiagramState } from './hooks';
 import useAppStore from '../../store/useAppStore';
 import { generateEdgeId } from './utils/storageUtils';
-import GitInfo from './git_tag';
 import TextUpdaterNode from './TextupdaterNode';
 import Sidebar from './Sidebar';
 import FormGroupNode from './FormGroupNode';
@@ -24,9 +23,10 @@ import PlayButton from './PlayButton';
 import StartButton from './StartButton';
 import { startDraftingProcess } from './utils/startDraftingProcess';
 import {  MarkerType } from 'reactflow';
+import { useCreateScenario } from './hooks/useCreateScenario';
 import toast from 'react-hot-toast';
 
-
+import GitInfo from './git_tag';
 
 import './utils/getAllConnectedNodes';
 import { v4 as uuidv4 } from 'uuid';
@@ -188,9 +188,6 @@ const BagpipesFlow = () => {
         }
       }, []);
 
-
-
-
       useEffect(() => {
         // console.log("Active Scenario ID in Bagpipes:", activeScenarioId);
       }, [activeScenarioId]);
@@ -199,7 +196,7 @@ const BagpipesFlow = () => {
         // Check if there's an active scenario when the component mounts
         if (activeScenarioId === null) {
           // console.log('No active scenario. Redirecting to Lab.');
-          navigate('/lab'); // Redirect to Lab page
+          navigate('/builder');
         }
       }, []); 
     
@@ -664,6 +661,18 @@ const BagpipesFlow = () => {
     }, [selectedNodeId, setSelectedNodeInScenario, activeScenarioId]);
     
     const handleDraftTransactions = async () => {
+      const actionNodes = scenarios[activeScenarioId].diagramData.nodes.filter(node => node.type === 'action');
+      console.log('actionNodes:', actionNodes);
+   
+      // Check if any action node has empty or missing actionData
+      const hasEmptyActionData = actionNodes.some(node => node.formState?.actionData);
+      console.log('hasEmptyActionData:', hasEmptyActionData);
+   
+      if (hasEmptyActionData) {
+         toast('you need to fetch data from your action nodes');
+         return;  // Stop the function here if there's missing actionData
+      }
+   
       try {
          const draftedTransactions = await startDraftingProcess(activeScenarioId, scenarios);
          console.log('Drafted transactions:', draftedTransactions);
@@ -676,6 +685,7 @@ const BagpipesFlow = () => {
          toast.error('An error occurred during transaction drafting.');
       }
    };
+   
 
   useEffect(() => {
     if (location.state && location.state.executeScenario) {
@@ -755,10 +765,9 @@ const BagpipesFlow = () => {
             </ReactFlowStyled>
             <StartButton draftTransactions={handleDraftTransactions} />
 
-            <PlayButton executeScenario={executeChainScenario} stopExecution={stopExecution} disabled={loading} />
+            {/* <PlayButton executeScenario={executeChainScenario} stopExecution={stopExecution} disabled={loading} /> */}
              
-            <GitInfo />
-
+           <GitInfo />
             </div>
             <Sidebar />
             {/* {modalNodeId && currentScenarioNodes && currentScenarioEdges && (
