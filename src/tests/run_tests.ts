@@ -1,6 +1,6 @@
 /// tests for XCMSend
 
-import { genericPolkadotToParachain, polkadot_to_assethub, assethub_to_parachain,  hydraDxToParachain, dotToHydraDx } from '../Chains/DraftTx/DraftReserveXTx';
+import { genericPolkadotToParachain, polkadot_to_assethub, assethub_to_parachain,  hydraDxToParachain, dotToHydraDx } from '../Chains/DraftTx/DraftxTransferTx';
 
 
 // tests transaction transfers

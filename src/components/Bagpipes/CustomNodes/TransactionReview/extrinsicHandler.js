@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 
 // import { hydradx_omnipool_sell } from "../../../Chains/DraftTx/DraftSwapTx";
 import { listChains } from "../../../../Chains/ChainsInfo";
+import { polkadot_to_assethub } from "../../../../Chains/DraftTx/DraftxTransferTx";
 
 export async function extrinsicHandler(actionType, formData) {
     
@@ -51,7 +52,7 @@ function handlexTransfer(formData) {
         'polkadot:assetHub': () => {
             console.log("handlexTransfer for Polkadot to AssetHub...");
             // const paraid = chains.find(chain => chain.name === 'assethub').paraid;
-            return dotToParachain(submittableAmount, target.address);
+            return polkadot_to_assethub(submittableAmount, target.address);
         },
         'hydradx:polkadot': () => {
             console.log("handlexTransfer for HydraDx to Polkadot...");

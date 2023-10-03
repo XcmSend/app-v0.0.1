@@ -19,9 +19,11 @@ function getRawAddress(ss58Address: string): Uint8Array {
 // working: https://polkadot.subscan.io/xcm_message/polkadot-6cff92a4178a7bf397617201e13f00c4da124981
 /// ref: https://polkaholic.io/tx/0x47914429bcf15b47f4d202d74172e5fbe876c5ac8b8a968f1db44377906f6654
 /// DOT to assethub
-export async function polkadot_to_assethub(amount: number, accountId: string) {
+export async function polkadot_to_assethub(amount: number, address: string) {
 	const api = await connectToWsEndpoint('polkadot');
 	const paraid = 1000;
+  const accountId = api.createType("AccountId32", address).toHex();
+
 	//console.log(`Connected to assethub`);
 	const destination = {
 		parents: 0,
@@ -52,6 +54,7 @@ export async function polkadot_to_assethub(amount: number, accountId: string) {
 
 	return tx;
 }
+
 
 /// Send DOT to a parachain
 export async function genericPolkadotToParachain(paraid: number, amount: number, address: string) {
@@ -143,8 +146,8 @@ export async function dotToHydraDx(amount: number, targetAddress: string){
     );
     console.log(`[dotTohydraDx] tx created!`);
     console.log("[dotTohydraDx] tx to hex", tx.toHex());
-    console.log("[dotTohydraDx] tx to human", tx.toHuman());
-    console.log("[dotTohydraDx] tx", tx);
+    //console.log("[dotTohydraDx] tx to human", tx.toHuman());
+    //console.log("[dotTohydraDx] tx", tx);
 
     return tx;
 }
@@ -234,8 +237,8 @@ export async function hydraDxToParachain(amount: number, assetId: number, destAc
 /// tested on assethub > hydradx
 /// assethub > parachain, send an asset on assethub to receiving parachain
 export async function assethub_to_parachain(assetid: string, amount: number, accountid: string, paraid: number) {
-	//console.log(`[assethub_to_hydra]`);
-	const api = await connectToWsEndpoint(endpoints.polkadot.assetHub);
+	//console.log(`[assethub_to_parachain]`);
+	const api = await connectToWsEndpoint('assetHub');
 	//const paraid = 2034;//hydradx
 	//const accountid = "0xca477d2ed3c433806a8ce7969c5a1890187d765ab8080d3793b49b42aa9e805f";
 	const destination = {
