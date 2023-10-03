@@ -5,58 +5,34 @@ import { Position } from 'reactflow';
 const nodeDefaults = {
   sourcePosition: Position.Right,
   targetPosition: Position.Left,
-  style: {
-    borderRadius: '100%',
-    backgroundColor: '#fff',
+  // style: {
+  //   borderRadius: '100%',
+  //   backgroundColor: '#fff',
    
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  //   display: 'flex',
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
 };
 
 const initialNodes = [
   {
-    id: 'openai_node_init_0',
+    id: 'chain_00000',
     position: { x: 0, y: 0 },
-    type: 'openAi',
-    data: {
-      image: './openai.svg',
-    },
+    type: 'chain',
     ...nodeDefaults,
   },
   {
-    id: 'openai_node_init_1',
+    id: 'action_00000',
     position: { x: -100, y: 0 },
-    type: 'openAi',
-    data: {
-      image: './openai.svg',
-    },
+    type: 'action',
+
     ...nodeDefaults,
   },
   {
-    id: 'openai_node_init_2',
+    id: 'chain_00001',
     position: { x: 250, y: -100 },
-    type: 'openAi',
-    data: {
-      image: './openai.svg',
-    },
-    ...nodeDefaults,
-  },
-  {
-    id: 'p-3',
-    position: { x: 250, y: 100 },
-    data: {
-      label: '🟧',
-    },
-    ...nodeDefaults,
-  },
-  {
-    id: 'p-4',
-    position: { x: 500, y: 0 },
-    data: {
-      label: '🟦',
-    },
+    type: 'chain',
     ...nodeDefaults,
   },
 ];
@@ -64,10 +40,16 @@ const initialNodes = [
 const initialEdges = [
 
   {
-    id: 'e1-3',
-    source: 'p-1',
-    target: 'p-3',
+    id: 'chain_00000-action-00000',
+    source: 'chain_00000',
+    target: 'action_00000',
   },
+  {
+    id: 'action_00000-chain-00001',
+    source: 'action_00000',
+    target: 'chain_00001',
+  },
+
 ];
 
 const nodes = [
