@@ -1,6 +1,6 @@
 /// tests for XCMSend
 
-import { genericPolkadotToParachain, assethub_to_parachain,  hydraDxToParachain, dotToHydraDx } from '../Chains/DraftTx/DraftReserveXTx';
+import { genericPolkadotToParachain, polkadot_to_assethub, assethub_to_parachain,  hydraDxToParachain, dotToHydraDx } from '../Chains/DraftTx/DraftReserveXTx';
 
 
 // tests transaction transfers
@@ -12,6 +12,7 @@ async function test_transfers() {
     console.log(`[test] Polkadot transfers`);
     const runp = await genericPolkadotToParachain(paraid, amount, address);
     console.log(`Polkadot DOT > assethub OK`)
+    const ri = await polkadot_to_assethub(amount, "16XByL4WpQ4mXzT2D8Fb3vmTLWfHu7QYh5wXX34GvahwPotJ");
     const runp2 = await dotToHydraDx(amount, address);
     console.log(`Polkadot DOT > hydradx OK`)
    
