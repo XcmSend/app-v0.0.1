@@ -104,7 +104,7 @@ export async function dotToHydraDx(amount: number, targetAddress: string){
         toast.error("Failed to connect to the endpoint. Please ensure you're connected and try again.");
         return; 
     }
-    console.log(`drafting dot to hydradx`);
+ //   console.log(`drafting dot to hydradx`);
 
 	const rawTargetAddress = getRawAddress(targetAddress);
 
@@ -144,8 +144,8 @@ export async function dotToHydraDx(amount: number, targetAddress: string){
 		{ Unlimited: null }  // weight_limit
 
     );
-    console.log(`[dotTohydraDx] tx created!`);
-    console.log("[dotTohydraDx] tx to hex", tx.toHex());
+ //   console.log(`[dotTohydraDx] tx created!`);
+ //   console.log("[dotTohydraDx] tx to hex", tx.toHex());
     //console.log("[dotTohydraDx] tx to human", tx.toHuman());
     //console.log("[dotTohydraDx] tx", tx);
 
