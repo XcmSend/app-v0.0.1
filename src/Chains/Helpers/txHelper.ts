@@ -48,3 +48,27 @@ async function spawn_native_balance_check(chain: supported_Polkadot_Chains, acco
 
 
 	}	
+
+
+/*
+returns a list of paraid's
+[
+  1001, 1002, 2000, 2004,
+  2006, 2007, 2011, 2012,
+  2013, 2021, 2030, 2031,
+  2032, 2034, 2035, 2040,
+  2046, 2048, 2051, 2094,
+  2101, 2104
+]
+*/
+/// list open hrmp channels for parachain X on polkadot
+export async function find_open_polkadot_channels(paraid: number): Promise<[number]> {
+	const api = await connectToWsEndpoint('polkadot');
+	const Channels = (
+        (await api.query.hrmp.hrmpIngressChannelsIndex(paraid)) as any
+      ).map((a) => a.toNumber());
+	  console.log('ok');
+
+	console.log(Channels);
+	return Channels;
+}
