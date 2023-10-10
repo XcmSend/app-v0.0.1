@@ -4,6 +4,7 @@ import { genericPolkadotToParachain, polkadot_to_assethub, assethub_to_parachain
 import * as assert from 'assert';
 import { checkAssetHubBalance, assetHubNativeBalance, checkHydraDxAssetBalance, checkPolkadotDotRawNativeBalance } from '../Chains/Helpers/AssetHelper';
 import { Keyring } from '@polkadot/keyring';
+import { find_open_polkadot_channels } from '../Chains/Helpers/txHelper';
 
 
 // if the transaction is in the right format it will break
@@ -120,6 +121,21 @@ async function test_balances(){
 
 }
 
+/// make sure chains have open channels
+async function check_open_channels(){
+    console.log('Checking open Hmrp channels');
+    const assethub = 1000;
+    const assethubchans: [number] = await find_open_polkadot_channels(assethub);
+    assert.ok(assethubchans.length > 1, 'Could not find open channels for assethub');
+    console.log('assethub has open channels');
+  
+    console.log('checking hydradx channels');
+    const hdx = 2034;
+    const hdxchans: [number] = await find_open_polkadot_channels(hdx);
+    assert.ok(hdxchans.length > 1, 'Could not find open channels for assethub');
+    console.log('hydradx has open channels');
+}
+
 /*
 Tests run: 
 drafting transactions and checking that they are encoded in the right way
@@ -135,6 +151,8 @@ async function main() {
     await test_balances();
     console.log('running transaction tests');
     await test_transfers();
+    console.log('Checking XCM channels');
+    await check_open_channels();
     console.log('test completed');
 }
 

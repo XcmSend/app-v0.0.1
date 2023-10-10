@@ -50,6 +50,16 @@ function  isAssetHubAssetBalance(obj: any): obj is  AssetHubAssetBalance {
   );
 }
 
+// remove commas in the free number colum
+function number_improve(blob: {
+  free: number;
+  reserved: number;
+  total: number;
+}): number {
+  const balancestring: string = blob.free.toString();
+  const balanceobj: number = parseFloat(balancestring.replace(/,/g, ''));
+  return balanceobj
+}
 
 // check asset balance on polkadot assethub
 export async function checkAssetHubBalance(assetid: number, account_id_32: string, signal?: AbortSignal): Promise<{ free: number, reserved: number, total: number, assetDecimals?: number }> {
@@ -61,7 +71,7 @@ export async function checkAssetHubBalance(assetid: number, account_id_32: strin
   //    console.log(`AssetHub Native Balance:`, nativeBal);
       // Assuming native balance is provided in the same format, return it
       return {
-          free: nativeBal.free,
+          free: number_improve(nativeBal),
           reserved: nativeBal.reserved,
           total: nativeBal.total,   
       };
@@ -191,7 +201,7 @@ export async function checkPolkadotDotRawNativeBalance(accountId: string, signal
   if (isAssetResponseObject(bal3)) {
       const bal2: AssetResponseObject = bal3;
       return {
-          free: bal2.data.free,
+          free: number_improve(bal2.data),
           reserved: bal2.data.reserved,
           total: bal2.data.total
       };
@@ -207,7 +217,7 @@ async function checkRococoRocRawNativeBalance(accountid: string, signal?: AbortS
   if (isAssetResponseObject(bal3)) {
       const bal2: AssetResponseObject = bal3;
       return {
-          free: bal2.data.free,
+          free: number_improve(bal2.data),
           reserved: bal2.data.reserved,
           total: bal2.data.total
       };
@@ -246,7 +256,7 @@ async function generic_check_native_balance(api: ApiPromise, address: string) {
   if (isAssetResponseObject(bal3)) {
       const bal2: AssetResponseObject = bal3;
 
-      return { free: bal3.data.free, reserved: bal3.data.reserved, miscFrozen:  bal3.data.miscFrozen , feeFrozen: bal3.data.feeFrozen} 
+      return { free: number_improve(bal3.data), reserved: bal3.data.reserved, miscFrozen:  bal3.data.miscFrozen , feeFrozen: bal3.data.feeFrozen} 
         }
     return {free: 0, reserved: 0, miscFrozen: 0, feeFrozen: 0};
 }
@@ -260,7 +270,7 @@ async function hydraDxNativeBalance(address: string): Promise<{ free: number, re
   const total = result.free + result.reserved + (result.miscFrozen || 0) + (result.feeFrozen || 0);
 
   return {
-      free: result.free,
+      free: number_improve(result),
       reserved: result.reserved,
       total: total
       // can include miscFrozen and feeFrozen if they are relevant for hydraDx
@@ -440,7 +450,7 @@ export async function genericRawNativeBalance(api: ApiPromise,accountId: string,
   if (isAssetResponseObject(bal3)) {
       const bal2: AssetResponseObject = bal3;
       return {
-          free: bal2.data.free,
+          free: number_improve(bal2.data),
           reserved: bal2.data.reserved,
           total: bal2.data.total
       };
