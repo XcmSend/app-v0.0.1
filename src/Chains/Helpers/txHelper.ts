@@ -67,8 +67,6 @@ export async function find_open_polkadot_channels(paraid: number): Promise<[numb
 	const Channels = (
         (await api.query.hrmp.hrmpIngressChannelsIndex(paraid)) as any
       ).map((a) => a.toNumber());
-	  console.log('ok');
 
-	console.log(Channels);
 	return Channels;
 }
