@@ -1,4 +1,4 @@
-import { dotToHydraDx, hydraDxToParachain, assethub_to_parachain, dotToParachain } from "../../../../Chains/DraftTx/DraftxTransferTx";
+import { dotToHydraDx, hydraDxToParachain, assethub_to_hydra, assethub_to_parachain, dotToParachain } from "../../../../Chains/DraftTx/DraftxTransferTx";
 import { getTokenDecimalsByChainName } from "../../../../Chains/Helpers/AssetHelper";
 import toast from "react-hot-toast";
 
@@ -44,34 +44,34 @@ function handlexTransfer(formData) {
             console.log("handlexTransfer for Polkadot to HydraDx...");
             return dotToHydraDx(submittableAmount, target.address);
         },
-        'hydradx:assetHub': () => {
+        'hydraDx:assetHub': () => {
             console.log("handlexTransfer for HydraDx to AssetHub...");
-            const paraid = chains.find(chain => chain.name === 'assetHub').paraid;
+            const paraid = 1000;
             return hydraDxToParachain(submittableAmount, source.assetId, target.chain, paraid);
         },
         'polkadot:assetHub': () => {
             console.log("handlexTransfer for Polkadot to AssetHub...");
-            // const paraid = chains.find(chain => chain.name === 'assethub').paraid;
             return polkadot_to_assethub(submittableAmount, target.address);
         },
-        'hydradx:polkadot': () => {
+        'hydraDx:polkadot': () => {
             console.log("handlexTransfer for HydraDx to Polkadot...");
-            const paraid = chains.find(chain => chain.name === 'polkadot').paraid;
+            const paraid = 0;
             return hydraDxToParachain(submittableAmount, source.assetId, target.chain, paraid);
         },
 
-        'assethub:polkadot': () => {
+        'assetHub:polkadot': () => {
             console.log("handlexTransfer for AssetHub to Polkadot...");
-            const paraid = chains.find(chain => chain.name === 'polkadot').paraid;
-            return assethub_to_parachain(formData.assetId.toString(), submittableAmount, target.chain, paraid);
+            const paraid = 0;
+            return assethub_to_parachain(source.assetId.toString(), submittableAmount, target.address, paraid);
         },
-        'assethub:hydradx': () => {
+        'assetHub:hydraDx': () => {
             console.log("handlexTransfer forAssetHub to HydraDx...");
-            const paraid = chains.find(chain => chain.name === 'hydraDx').paraid;
-            return assethub_to_parachain(formData.assetId.toString(), submittableAmount, target.chain, paraid);
+            const paraid = 2034;
+            return assethub_to_hydra(source.assetId, submittableAmount, target.address);
         }
     };
-
+    console.log('reserverTransferActions:');
+    console.log(reserverTransferActions);
     const action = reserverTransferActions[`${source.chain}:${target.chain}`];
 
     if (action) {
