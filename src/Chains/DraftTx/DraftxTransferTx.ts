@@ -1,14 +1,26 @@
 
-import { decodeAddress } from '@polkadot/util-crypto';
+//import { decodeAddress } from '@polkadot/util-crypto';
+import { blake2AsU8a, decodeAddress } from '@polkadot/util-crypto'
+import { hexToU8a, isHex, u8aToHex } from "@polkadot/util";
+
 import endpoints from "../api/WsEndpoints";
 import { ChainInfo, listChains } from "../ChainsInfo";
 import connectToWsEndpoint from "../api/connect";
 import { CHAIN_METADATA } from "../api/metadata";
 import toast, { Toaster } from 'react-hot-toast';
+import { createType } from '@polkadot/types';
 
+import Keyring from "@polkadot/keyring";
+
+function raw_address_now(ss58: string) {
+		const keyring = new Keyring();
+		const address = u8aToHex(keyring.decodeAddress(ss58));
+		return address;
+}
 
 function getRawAddress(ss58Address: string): Uint8Array {
     try {
+		
         return decodeAddress(ss58Address);
     } catch (e) {
         throw new Error("Invalid SS58 address format.");
@@ -204,6 +216,13 @@ export async function dotToParachain(amount: number,  targetAddress: string){
 export async function hydraDxToParachain(amount: number, assetId: number, destAccount: string, paraId: number) {
 	const api = await connectToWsEndpoint('hydraDx');
 
+
+	console.log(`[hydradx to parachain]amount :`, amount);
+	console.log(`[hydradx to parachain]assetId :`, assetId);
+	console.log(`[hydradx to parachain]destAccount :`, destAccount);
+	console.log(`[hydradx to parachain]paraId :`, paraId);
+	
+
     const asset = {
         fun: {
             Fungible: amount, 
@@ -234,11 +253,83 @@ export async function hydraDxToParachain(amount: number, assetId: number, destAc
 	return tx;
 }
 
-/// tested on assethub > hydradx
+function uint8ArrayToHex(uint8Array: Uint8Array): string {
+	let hex = '';
+	for (let i = 0; i < uint8Array.length; i++) {
+	  const byte = uint8Array[i];
+	  // Use the toString(16) method to convert each byte to a hexadecimal string.
+	  // Ensure that the resulting string has two characters by using padStart.
+	  hex += byte.toString(16).padStart(2, '0');
+	}
+	return hex;
+  }
+
+
+/// assethub > hydra
+export async function assethub_to_hydra(assetid: number, amount: number, accountId: string) {
+	console.log(`[assethub_to_hydra]`);
+	const api = await connectToWsEndpoint('assetHub');
+	const paraid = 2034;//hydradx
+	const accountid = raw_address_now(accountId);//uint8ArrayToHex(blake2(getRawAddress(accountid)).map((x, i): number => (x + 256 - ZERO[i]) % 256));
+	const destination = {
+		interior: { X1: { Parachain: paraid } },
+		parents: 1,
+	};
+
+	const account = {
+		parents: 0,
+		interior: { X1: { AccountId32: { id: accountid } } },
+	};
+
+	const asset = {
+		id: {
+			Concrete: {
+				parents: 0,
+				interior: {
+					X2: [
+						{ PalletInstance: 50 },
+						{ GeneralIndex: "1984" },
+					],
+				},
+			},
+		},
+		fun: { Fungible: amount },
+		parents: 0,
+	};
+	//];
+
+	const tx = api.tx.polkadotXcm.limitedReserveTransferAssets(
+		{ V3: destination },
+		{ V3: account },
+		{ V3: [asset] },
+		0,
+		{ Unlimited: 0 }
+	);
+	return tx;
+}
+
+
+
+
+
 /// assethub > parachain, send an asset on assethub to receiving parachain
 export async function assethub_to_parachain(assetid: string, amount: number, accountid: string, paraid: number) {
-	//console.log(`[assethub_to_parachain]`);
+
+	console.log(`assethub_to_parachain]amount :`, amount);
+	console.log(`[assethub_to_parachain]assetId :`, assetid);
+
+	console.log(`[assethub_to_parachain]paraId :`, paraid);
+	
 	const api = await connectToWsEndpoint('assetHub');
+
+//	const blake2 = (value: Uint8Array): Uint8Array => blake2AsU8a(value, 512);
+//	const ZERO = blake2(new Uint8Array(32))
+	
+	const accountId = raw_address_now(accountid);//uint8ArrayToHex(blake2(getRawAddress(accountid)).map((x, i): number => (x + 256 - ZERO[i]) % 256));
+
+	console.log(`[assethub_to_parachain]destAccount :`, accountId);
+	//console.log(`[assethub_to_parachain]`);
+
 	//const paraid = 2034;//hydradx
 	//const accountid = "0xca477d2ed3c433806a8ce7969c5a1890187d765ab8080d3793b49b42aa9e805f";
 	const destination = {
@@ -248,7 +339,7 @@ export async function assethub_to_parachain(assetid: string, amount: number, acc
 	
 	  const account = {
 		parents: 0,
-		interior: { X1: { AccountId32: { id: accountid} } },
+		interior: { X1: { AccountId32: { id: accountId} } },
 	  };
 
 	  const asset =	{
