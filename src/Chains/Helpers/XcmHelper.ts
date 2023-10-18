@@ -43,3 +43,9 @@ export async function polkadot_parachain_channel_check(sourceparaid: number, des
     return false;
 
 }
+
+
+/// get the lease time of a polkadot connected chain
+export async function polkadot_get_lease_time(paraid: number) {
+    
+}
