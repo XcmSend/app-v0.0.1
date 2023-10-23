@@ -1,5 +1,5 @@
 import connectToWsEndpoint from "../api/connect";
-
+import { ChainInfo } from "../ChainsInfo"
 
 /*
 returns a list of paraid's
@@ -42,6 +42,33 @@ export async function polkadot_parachain_channel_check(sourceparaid: number, des
 
     return false;
 
+}
+
+export async function inandoutchannels(paraid: number): Promise<number[]> {
+  const s_ingress = await find_ingress_polkadot_channels(paraid);
+    const s_egress = await find_engress_polkadot_channels(paraid);
+  const paraid_map: number[] = s_ingress.filter((num) => s_egress.includes(num));
+
+  return paraid_map;
+
+}
+
+/// <sourceparaid, [openhrmp channels ingoing and outgoing as paraid]>
+/// const index_channels: Map<number, number[]> = await build_hrmp(listchains());
+export async function build_hrmp(chainlist: Record<number, ChainInfo>): Promise<Map<number, number[]>> { // Promise<Map<ParaId, ParaId[]>> 
+  // const mylist: Vec<ParaId, Vec<ParaId>> = 
+   const openchannels: Map<number, number[]> = new Map();
+  // console.log(`Building hrmp dicts`);
+
+   for (const key in chainlist) {
+       const chainInfo = chainlist[key];
+       const paraid = chainInfo.paraid;
+//       const name = chainInfo.name;
+       const channels: number[] = await inandoutchannels(paraid); 
+       openchannels.set(paraid, channels);
+//       console.log(`Paraid: ${paraid}, Name: ${name}`);
+     }
+   return openchannels;
 }
 
 
